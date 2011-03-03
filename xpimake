@@ -1,0 +1,119 @@
+#! /bin/sh
+
+THIS_NAME=$(basename $0)
+THIS_VERSION='1.0'
+
+TAG_OPEN='<em:version>'
+TAG_CLOSE='</em:version>'
+
+function print_usage() {
+    echo "${THIS_NAME} v${THIS_VERSION}"
+    echo -e "\nUsage:"
+    echo -e "\t${THIS_NAME} {-e | --extract} file.xpi"
+    echo -e "\t\tExtract files from a XPI"
+    echo ''
+    echo -e "\t${THIS_NAME} {-c | --compress} directory"
+    echo -e "\t\tCompress files into a XPI"
+    echo ''
+    echo -e "\t${THIS_NAME} {-p | --patch} file.xpi file.patch"
+    echo -e "\t\tPatch a XPI"
+    echo ''
+    echo -e "\t${THIS_NAME} {-s | --show-version} file.xpi"
+    echo -e "\t\tDisplay version of a XPI"
+    echo ''
+    echo -e "\t${THIS_NAME} {-S | --set-version} file.xpi NEW_VERSION"
+    echo -e "\t\tSet version of a XPI"
+}
+
+function display_status() {
+    if [ $? -eq 0 ]; then
+        echo -e '\tOK'
+    else
+        echo -e '\tError!'
+    fi
+}
+
+function do_extract() {
+    echo -n 'Extracting XPI'
+    if [ -d ${2/.xpi//} ]; then
+       rm -rf ${2/.xpi//}
+    fi
+    unzip -q ${2} -d ${2/.xpi//}
+    display_status
+}
+
+function do_compress() {
+    echo -n 'Compressing'
+    cd "${2}"
+    zip -qr "../${2}.xpi" ./*
+    display_status
+    cd - 2>&1 > /dev/null
+}
+
+function do_patch() {
+    do_extract $*
+
+    echo -n 'Patching'
+    cd ${2/.xpi//}
+    patch --quiet -N -p1 <../${3}
+
+    if [ $? -eq 0 ]; then
+        display_status
+        cd - 2>&1 > /dev/null
+
+        do_compress $1 "${2/.xpi/}"
+
+        rm -rf "${2/.xpi/}"
+    fi
+
+}
+
+function get_version() {
+    version=$(sed -n "s|.*${TAG_OPEN}\(.*\)${TAG_CLOSE}.*|\1|p" \
+                     "${2/.xpi/}/install.rdf")
+}
+
+function do_show_version() {
+    do_extract $*
+
+    get_version $*
+    echo -e "\n${version}"
+
+    rm -rf ${2/.xpi/}
+}
+
+function do_set_version() {
+    do_extract $*
+
+    get_version $*
+    echo -n 'Changing ver.'
+    sed -i "s|${TAG_OPEN}${version}${TAG_CLOSE}|${TAG_OPEN}${3}${TAG_CLOSE}|" \
+           ${2/.xpi/}/install.rdf
+    display_status
+
+    do_compress ${1} ${2/.xpi/}
+
+    rm -rf ${2/.xpi/}
+}
+
+case "$1" in
+    '-e' | '--extract')
+        do_extract $*
+    ;;
+    '-c' | '--compress')
+        do_compress $*
+    ;;
+    '-p' | '--patch')
+        do_patch $*
+    ;;
+    '-s' | '--show-version')
+        do_show_version $*
+    ;;
+    '-S' | '--set-version')
+        do_set_version $*
+    ;;
+    *)
+        print_usage
+    ;;
+esac
+
