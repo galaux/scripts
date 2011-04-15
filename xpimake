@@ -1,7 +1,7 @@
 #! /bin/sh
 
 THIS_NAME=$(basename $0)
-THIS_VERSION='1.0'
+THIS_VERSION='20110415'
 
 TAG_OPEN='<em:version>'
 TAG_CLOSE='</em:version>'
@@ -34,31 +34,25 @@ function display_status() {
 }
 
 function do_extract() {
-#    echo -n 'Extracting XPI'
     if [ -d ${2/.xpi//} ]; then
        rm -rf ${2/.xpi//}
     fi
     unzip -q ${2} -d ./${2/.xpi//}
-#    display_status
 }
 
 function do_compress() {
-#    echo -n 'Compressing'
     cd "${2}"
     zip -qr "../${2}.xpi" ./*
-#    display_status
     cd - 2>&1 > /dev/null
 }
 
 function do_patch() {
     do_extract $*
 
-#    echo -n 'Patching'
     cd ${2/.xpi//}
     patch --quiet -N -p1 <../${3}
 
     if [ $? -eq 0 ]; then
-#        display_status
         cd - 2>&1 > /dev/null
 
         do_compress $1 "${2/.xpi/}"
@@ -86,10 +80,8 @@ function do_set_version() {
     do_extract $*
 
     get_version $*
-#    echo -n 'Changing ver.'
     sed -i "s|${TAG_OPEN}${version}${TAG_CLOSE}|${TAG_OPEN}${3}${TAG_CLOSE}|" \
            ${2/.xpi/}/install.rdf
-#    display_status
 
     do_compress ${1} ${2/.xpi/}
 
