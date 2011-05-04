@@ -1,0 +1,20 @@
+#!/bin/sh
+
+THIS_NAME=$(basename $0)
+THIS_VERSION=''
+
+function print_usage() {
+    echo "${THIS_NAME} v${THIS_VERSION}"
+    echo -e "\nUsage:"
+    echo -e "\t${THIS_NAME} ..."
+}
+
+case "$1" in
+    '' | '')
+        
+    ;;
+    *)
+        print_usage
+    ;;
+esac
+
