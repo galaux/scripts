@@ -1,0 +1,64 @@
+#!/bin/bash
+
+THIS_NAME=$(basename $0)
+THIS_VERSION='20111030'
+
+. /etc/${THIS_NAME}.conf
+
+function print_usage() {
+    echo "${THIS_NAME} v${THIS_VERSION}"
+    echo -e "\nUsage:"
+    echo -e "\t${THIS_NAME} [--official|--community] pkgname"
+}
+
+# Params:
+#   1. name of pkgbase to sync
+#   2. repo the package belongs to: '0': 'svn-package', '1': 'svn-community'
+function do_duplicate() {
+    pkgbase=${1}
+    repo=${2}
+
+    echo "Updating SVN tree for ${pkgbase}"
+    svn up ${LOCAL_SVN_DIR[${repo}]}/${pkgbase}
+
+    echo "Retrieving changes from ${REMOTE_HOSTNAME} for ${pkgbase}"
+    rsync -rq ${REMOTE_HOSTNAME}:${REMOTE_SVN_DIR[${repo}]}/${pkgbase}/* ${LOCAL_SVN_DIR[${repo}]}/${pkgbase} \
+          --exclude ${REMOTE_SVN_DIR[${repo}]}/${pkgbase}/trunk/src
+
+    echo "Sourcing PKGBUILD"
+    . "${LOCAL_SVN_DIR[${repo}]}/${pkgbase}/trunk/PKGBUILD"
+
+    echo "Sourcing makepkg.conf files"
+    . /etc/makepkg.conf
+    test -f ~/.makepkg.conf && . ~/.makepkg.conf
+
+    echo "Retrieving packages"
+    for a in ${arch[*]}; do
+        for p in ${pkgname[*]}; do
+            echo "${p}-${pkgver}-${pkgrel}-${a}${PKGEXT}"
+            rsync ${REMOTE_HOSTNAME}:${REMOTE_PKG_DIR}/${p}-${pkgver}-${pkgrel}-${a}${PKGEXT} \
+                  ${PKGDEST}
+        done
+    done
+
+    cd "${LOCAL_SVN_DIR[${repo}]}/${pkgbase}/trunk"
+}
+
+if [ ${#*} -eq 2 ]; then
+    if [ "${1}" = '--official' ]; then
+        do_duplicate ${2} 0
+    elif [ "${1}" = '--community' ]; then
+        do_duplicate ${2} 1
+    else
+        echo "Bad parameters." 
+        print_usage
+        exit 1
+    fi
+elif [ ${#*} -eq 1 ]; then
+    echo "No repo specified. Assuming 'official'"
+    do_duplicate ${1} 0
+else
+    echo 'Specify package name'
+    print_usage
+    exit 1
+fi
