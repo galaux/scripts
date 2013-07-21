@@ -1,0 +1,29 @@
+<html>
+<head><title>OpenLayers Text File Example</title></head>
+<body>
+  <div id="mapdiv"></div>
+  <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <script>
+    map = new OpenLayers.Map("mapdiv");
+    map.addLayer(new OpenLayers.Layer.OSM());
+
+    var pois = new OpenLayers.Layer.Text( "My Points",
+                    { location:"./fopenlayer.txt",
+                      projection: map.displayProjection
+                    });
+    map.addLayer(pois);
+
+
+    //Set start centrepoint and zoom
+    //TODO: Is it possible to just zoom to extents of defined markers instead?
+
+    var lonLat = new OpenLayers.LonLat( 2.502588, 48.680793 )
+          .transform(
+            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+            map.getProjectionObject() // to Spherical Mercator Projection
+          );
+    var zoom=7;
+    map.setCenter (lonLat, zoom);
+  </script>
+  <div id="explanation">Load some markers data from a text file, formatted in a particularl OpenLayers CSV format: <a href="./textfile.txt">textfile.text</a></div>
+</body></html>

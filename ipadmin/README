@@ -1,0 +1,5 @@
+Run ipadmin.sh (as root or with sudo)
+Put the following files/dir in /var/www/ipadmin:
+  - index.html
+  - fopenlayer.txt
+  - img/
