@@ -1,0 +1,65 @@
+default
+partial alphanumeric_keys
+xkb_symbols "frcode" {
+
+// Extra - AltGr
+// ┌─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┬─────┲━━━━━━━━━━┓
+// │     │     │     │   Ê │   £ │     ┃     │   Û │   Î │   Ô │     │     │     ┃          ┃
+// │     │     │   ² │   ê │   € │   ‰ ┃     │   û │   î │   ô │     │     │     ┃ ⌫        ┃
+// ┢━━━━━┷━━┱──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┺━━┳━━━━━━━┫
+// ┃        ┃   Â │   É │   È │   ® │   ™ ┃     │   Ù │   Ì │   Ò │   Œ │     │     ┃       ┃
+// ┃ ↹      ┃   â │   é │   è │   | │   \ ┃     │   ù │   ì │   ò │   œ │     │     ┃       ┃
+// ┣━━━━━━━━┻┱────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┴┬────┺┓  ⏎   ┃
+// ┃         ┃   À │     │     │     │     ┃     │     │     │     │     │     │     ┃      ┃
+// ┃ ⇬       ┃   à │   _ │   = │   - │   + ┃   ⇐ │   ⇓ │   ⇑ │   ⇒ │     │     │     ┃      ┃
+// ┣━━━━━━┳━━┹──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┬──┴──┲━━┷━━━━━┻━━━━━━┫
+// ┃      ┃     │     │     │   Ç │     │     ┃     │     │     │     │     ┃               ┃
+// ┃ ⇧    ┃     │     │     │   ç │     │     ┃   … │   { │   [ │   ] │   } ┃ ⇧             ┃
+// ┣━━━━━━┻┳━━━━┷━━┳━━┷━━━━┱┴─────┴─────┴─────┴─────┴─────┴─┲━━━┷━━━┳━┷━━━━━╋━━━━━━━┳━━━━━━━┫
+// ┃       ┃       ┃       ┃                                ┃       ┃       ┃       ┃       ┃
+// ┃ Ctrl  ┃ super ┃ Alt   ┃ ␣                              ┃ AltGr ┃ super ┃ menu  ┃ Ctrl  ┃
+// ┗━━━━━━━┻━━━━━━━┻━━━━━━━┹────────────────────────────────┺━━━━━━━┻━━━━━━━┻━━━━━━━┻━━━━━━━┛
+
+    name[Group1]= "English (US, french with coding char)";
+
+    include "us(basic)"
+
+    key <AE02> { [2,      at,           twosuperior                   ] };
+    key <AE03> { [3,      numbersign,   ecircumflex,      Ecircumflex ] };
+    key <AE04> { [4,      dollar,       EuroSign,         sterling    ] };
+    key <AE05> { [5,      percent,      U2030] };
+    key <AE07> { [7,      ampersand,    ucircumflex,      Ucircumflex ] };
+    key <AE08> { [8,      asterisk,     icircumflex,      Icircumflex ] };
+    key <AE09> { [9,      parenleft,    ocircumflex,      Ocircumflex ] };
+
+    key <AD01> { [q,      Q,            acircumflex,      Acircumflex ] };
+    key <AD02> { [w,      W,            eacute,           Eacute      ] };
+    key <AD03> { [e,      E,            egrave,           Egrave      ] };
+    key <AD04> { [r,      R,            bar,              registered  ] };
+    key <AD05> { [t,      T,            backslash,        trademark   ] };
+    key <AD07> { [u,      U,            ugrave,           Ugrave      ] };
+    key <AD08> { [i,      I,            igrave,           Igrave      ] };
+    key <AD09> { [o,      O,            ograve,           Ograve      ] };
+    key <AD10> { [p,      P,            oe,               OE          ] };
+
+    key <AC01> { [a,      A,            agrave,           Agrave      ] };
+    key <AC02> { [s,      S,            underscore                    ] };
+    key <AC03> { [d,      D,            equal                         ] };
+    key <AC04> { [f,      F,            minus                         ] };
+    key <AC05> { [g,      G,            plus                          ] };
+    key <AC06> { [h,      H,            Left                          ] };
+    key <AC07> { [j,      J,            Down                          ] };
+    key <AC08> { [k,      K,            Up                            ] };
+    key <AC09> { [l,      L,            Right                         ] };
+
+    key <AB03> { [c,      C,            ccedilla,         Ccedilla    ] };
+    key <AB06> { [n,      N,            ellipsis                      ] };
+    key <AB07> { [m,      M,            braceleft                     ] };
+    key <AB08> { [comma,  less,         bracketleft                   ] };
+    key <AB09> { [period, greater,      bracketright                  ] };
+    key <AB10> { [slash,  question,     braceright                    ] };
+
+    key <SPCE> { [ space, nobreakspace, Escape                        ] };
+
+    include "level3(ralt_switch)"
+};
